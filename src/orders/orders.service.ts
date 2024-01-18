@@ -40,7 +40,7 @@ export class OrdersService {
             });
         } catch (error) {
             if (error.code === 'P2025')
-                throw new BadRequestException("Product or clientdoesn't exist");
+                throw new BadRequestException("Product or client doesn't exist");
             throw error;
         }
     }

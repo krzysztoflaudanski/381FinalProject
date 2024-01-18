@@ -1,19 +1,19 @@
 import { Injectable, ConflictException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { Password, User } from '@prisma/client';
+import { Client, Password, User } from '@prisma/client';
 
 @Injectable()
 export class UsersService {
     constructor(private prismaService: PrismaService) { }
 
     public getAll(): Promise<User[]> {
-        return this.prismaService.user.findMany({include: {client: true}});
+        return this.prismaService.user.findMany({ include: { client: true } });
     }
 
     public getById(id: User['id']): Promise<User | null> {
         return this.prismaService.user.findUnique({
             where: { id },
-            include: {client: true}
+            include: { client: true }
         });
     }
 
@@ -24,7 +24,8 @@ export class UsersService {
         });
     }
 
-    public async create(userData: Omit<User, 'id' | 'role'>, password: Password['hashedPassword']): Promise<User> {
+    public async create(userData: Omit<User, 'id' | 'role'>, password: Password['hashedPassword'],
+        email: Client['email'], firstName: Client['firstName'], lastName: Client['lastName'], address: Client['address']): Promise<User> {
         try {
             return await this.prismaService.user.create({
                 data: {
@@ -34,11 +35,24 @@ export class UsersService {
                             hashedPassword: password,
                         },
                     },
+                    client: {
+                        create: {
+                            email: email,
+                            firstName: firstName,
+                            lastName: lastName,
+                            address: address,
+                        }
+                    }
                 },
             });
         } catch (error) {
-            if (error.code === 'P2002')
-                throw new ConflictException("This login is already exist");
+            if (error.code === 'P2002') {
+                if (error.meta?.target?.includes('login')) {
+                    throw new ConflictException('This login is already exist');
+                } else if (error.meta?.target?.includes('email')) {
+                    throw new ConflictException('This email is already exist');
+                }
+            }
             throw error;
         }
     }
