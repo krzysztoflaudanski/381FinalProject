@@ -17,7 +17,7 @@ export class UsersService {
         });
     }
 
-    public getByLogin(login: User['login']): Promise<User | null> {
+    public getByLogin(login: User['login']): Promise<(User & { password: Password }) | null> {
         return this.prismaService.user.findUnique({
             where: { login },
             include: { password: true }

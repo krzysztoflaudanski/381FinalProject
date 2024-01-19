@@ -1,8 +1,9 @@
-import { Controller, Get, Param, Delete, Post, Put, Body } from '@nestjs/common';
+import { Controller, Get, Param, Delete, Post, Put, Body, UseGuards } from '@nestjs/common';
 import { OrdersService } from './orders.service';
 import { ParseUUIDPipe, NotFoundException } from '@nestjs/common';
 import { CreateOrderDTO } from './dtos/create-order.dto';
 import { UpdateOrderDTO } from './dtos/update-order.dto';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 
 @Controller('orders')
 export class OrdersController {
@@ -21,6 +22,7 @@ export class OrdersController {
     }
 
     @Delete('/:id')
+    @UseGuards(JwtAuthGuard)
     async deleteById(@Param('id', new ParseUUIDPipe()) id: string) {
         if (!(await this.ordersService.getById(id)))
             throw new NotFoundException('Order not found');
@@ -29,11 +31,13 @@ export class OrdersController {
     }
 
     @Post('/')
+    @UseGuards(JwtAuthGuard)
     create(@Body() orderData: CreateOrderDTO) {
         return this.ordersService.create(orderData);
     }
 
     @Put('/:id')
+    @UseGuards(JwtAuthGuard)
     async update(
         @Param('id', new ParseUUIDPipe()) id: string,
         @Body() orderData: UpdateOrderDTO,
