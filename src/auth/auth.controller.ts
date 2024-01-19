@@ -2,6 +2,7 @@ import { Controller, Body, Post, Request, UseGuards, Response, Delete } from '@n
 import { AuthService } from './auth.service';
 import { RegisterDTO } from './dtos/create-user.dto';
 import { LocalAuthGuard } from './local-auth.guard';
+import { JwtAuthGuard } from './jwt-auth.guard';
 
 
 @Controller('auth')
@@ -18,6 +19,15 @@ export class AuthController {
     async login(@Request() req, @Response() res) {
         const tokens = await this.authService.createSession(req.user);
         res.cookie('auth', tokens, { httpOnly: true });
+        res.send({
+            message: 'success',
+        });
+    }
+
+    @UseGuards(JwtAuthGuard)
+    @Delete('logout')
+    async logout(@Response() res) {
+        res.clearCookie('auth', { httpOnly: true });
         res.send({
             message: 'success',
         });
