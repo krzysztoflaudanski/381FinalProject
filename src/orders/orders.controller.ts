@@ -4,12 +4,14 @@ import { ParseUUIDPipe, NotFoundException } from '@nestjs/common';
 import { CreateOrderDTO } from './dtos/create-order.dto';
 import { UpdateOrderDTO } from './dtos/update-order.dto';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { AdminAuthGuard } from 'src/auth/admin-auth.guard';
 
 @Controller('orders')
 export class OrdersController {
     constructor(private ordersService: OrdersService) { }
 
     @Get('/')
+    @UseGuards(AdminAuthGuard)
     @UseGuards(JwtAuthGuard)
     getAll(): any {
         return this.ordersService.getAll();

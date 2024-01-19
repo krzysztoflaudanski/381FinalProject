@@ -3,10 +3,11 @@ import { PassportStrategy } from '@nestjs/passport';
 import { Injectable } from '@nestjs/common';
 import { Request } from 'express';
 import { ConfigService } from '@nestjs/config';
+import { UsersService } from 'src/users/users.service';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
-    constructor(private configService: ConfigService) {
+    constructor(private configService: ConfigService, private usersService: UsersService) {
         super({
             jwtFromRequest: ExtractJwt.fromExtractors([
                 (request: Request) => {
@@ -21,7 +22,12 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
             secretOrKey: configService.get('jwt.secret'),
         });
     }
+    // Teraz w req.user będziemy mieli zawartość całego rekordu użytkownika. Znajdzie się wiec tam informacja o emailu, id, ale również roli.
     async validate(payload: any) {
-        return { userId: payload.sub, login: payload.login };
-    }
+        const user = await this.usersService.getById(payload.sub);
+        return user;
+      }
+    // async validate(payload: any) {
+    //     return { userId: payload.sub, login: payload.login };
+    // }
 }
