@@ -10,8 +10,6 @@ export class ProductsController {
     constructor(private productsService: ProductsService) { }
 
     @Get('/')
-    @UseGuards(AdminAuthGuard)
-    @UseGuards(JwtAuthGuard)
     getAll() {
         return this.productsService.getAll();
     }

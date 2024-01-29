@@ -11,8 +11,6 @@ export class OrdersController {
     constructor(private ordersService: OrdersService) { }
 
     @Get('/')
-    @UseGuards(AdminAuthGuard)
-    @UseGuards(JwtAuthGuard)
     getAll(): any {
         return this.ordersService.getAll();
     }
