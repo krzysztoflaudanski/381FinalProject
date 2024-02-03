@@ -17,10 +17,10 @@ export class UsersService {
         });
     }
 
-    public getByLogin(login: User['login']): Promise<(User & { password: Password }) | null> {
+    public getByLogin(login: User['login']): Promise<(User & { password: Password, client: Client }) | null> {
         return this.prismaService.user.findUnique({
             where: { login },
-            include: { password: true }
+            include: { password: true, client: true }
         });
     }
 

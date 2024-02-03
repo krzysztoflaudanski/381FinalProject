@@ -14,9 +14,15 @@ import { AuthModule } from './auth/auth.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { ConfigModule } from '@nestjs/config';
 import configuration from './config/configuration';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
 
 @Module({
-  imports: [ProductsModule, OrdersModule, UsersModule, AuthModule, PrismaModule, ConfigModule.forRoot({
+  imports: [
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '../../', 'client', 'build'),
+    }),
+    ProductsModule, OrdersModule, UsersModule, AuthModule, PrismaModule, ConfigModule.forRoot({
     load: [configuration],
     isGlobal: true
   })],
@@ -25,7 +31,7 @@ import configuration from './config/configuration';
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer): void {
-    consumer.apply(cors()).forRoutes({
+    consumer.apply(cors({ origin: 'http://localhost:3000', credentials: true })).forRoutes({
       path: '*',
       method: RequestMethod.ALL,
     });

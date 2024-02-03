@@ -14,11 +14,21 @@ export class AuthController {
         return this.authService.register(authData);
     }
 
+    // @UseGuards(LocalAuthGuard)
+    // @Post('login')
+    // async login(@Request() req, @Response() res) {
+    //     const tokens = await this.authService.createSession(req.user);
+    //     res.cookie('auth', tokens, { httpOnly: true, secure: process.env.NODE_ENV === 'production', sameSite: 'None' });
+    //     res.send({
+    //         message: 'success',
+    //     });
+    // }
+
     @UseGuards(LocalAuthGuard)
     @Post('login')
     async login(@Request() req, @Response() res) {
         const tokens = await this.authService.createSession(req.user);
-        res.cookie('auth', tokens, { httpOnly: true });
+        res.cookie('auth', tokens, { httpOnly: false });
         res.send({
             message: 'success',
         });
@@ -32,5 +42,4 @@ export class AuthController {
             message: 'success',
         });
     }
-
 }

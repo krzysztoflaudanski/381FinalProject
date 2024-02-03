@@ -36,13 +36,17 @@ export class AuthService {
     }
 
     public async createSession(user: any) {
-        const payload = { login: user.login, sub: user.id };
+        const payload = {
+            login: user.login,
+            sub: user.id,
+            role: user.role,
+            client: user.client ? { ...user.client } : null,
+        };
 
         const accessToken = this.jwtService.sign(payload, {
             secret: this.configService.get('jwt.secret'),
             expiresIn: this.configService.get('jwt.expiresIn'),
         });
-
         return {
             access_token: accessToken,
         };

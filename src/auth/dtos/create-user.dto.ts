@@ -11,13 +11,13 @@ export class RegisterDTO {
 
     @IsNotEmpty()
     @IsString()
-    @MinLength(5, { message: 'password Min length 5' })
+    @MinLength(10, { message: 'password Min length 10' })
     @MaxLength(40, { message: 'password Max length 40' })
     password: string;
 
     @IsNotEmpty()
     @IsString()
-    @MinLength(5, { message: 'Min length 5' })
+    @MinLength(10, { message: 'Min length 10' })
     @MaxLength(40, { message: 'Max length 40' })
     @Match('password')
     passwordRepeat: string;
@@ -30,17 +30,18 @@ export class RegisterDTO {
     @IsNotEmpty()
     @IsString()
     @MinLength(2, { message: 'firstName Min length 2' })
-    @MaxLength(40, { message: 'firstName Max length 40' })
+    @MaxLength(25, { message: 'firstName Max length 25' })
     firstName: string;
 
     @IsNotEmpty()
     @IsString()
     @MinLength(2, { message: 'lastName Min length 2' })
-    @MaxLength(40, { message: 'lastName Max length 40' })
+    @MaxLength(25, { message: 'lastName Max length 25' })
     lastName: string;
 
     @IsNotEmpty()
     @IsString()
+    @MinLength(10, { message: 'lastName Min length 10' })
+    @MaxLength(50, { message: 'lastName Max length 50' })
     address: string;
-   
 }
