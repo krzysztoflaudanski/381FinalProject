@@ -48,6 +48,7 @@ const NavBar = () => {
                         {!login && <Nav.Link as={NavLink} to="/login">Sign In</Nav.Link>}
                         {!login && <Nav.Link as={NavLink} to="/register">Sign Up</Nav.Link>}
                         {login && <Nav.Link as={NavLink} to="/logout">Sign Out</Nav.Link>}
+                        <Nav.Link as={NavLink} to="/cart">Cart</Nav.Link>
                         {admin && <Nav.Link as={NavLink} to="/adminPanel">Admin Panel</Nav.Link>}
                     </Nav>
                 </Navbar.Collapse>

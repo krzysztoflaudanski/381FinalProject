@@ -3,15 +3,15 @@ import { ValidationPipe } from '@nestjs/common';
 import { AppModule } from './app.module';
 import * as cookieParser from 'cookie-parser';
 import { ConfigService } from '@nestjs/config';
-import * as cors from 'cors';
+import * as express from 'express';
 
 async function bootstrap() {
 
   const app = await NestFactory.create(AppModule);
-
   app.useGlobalPipes(new ValidationPipe({ transform: true }));
   app.setGlobalPrefix('api');
   app.use(cookieParser());
+  app.use('/', express.static('public/'));
   await app.enableShutdownHooks();
   const configService = app.get(ConfigService);
   await app.listen(configService.get('port'));

@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { fetchAllProducts } from "./redux/productsRedux";
 import { Container } from "react-bootstrap";
 import { Routes, Route } from 'react-router-dom';
@@ -11,19 +11,29 @@ import NotFound from "./components/views/NotFound/NotFound";
 import Footer from "./components/views/Footer/Footer";
 import { AuthProvider } from "./components/features/AuthContext/AuthContext";
 import Logout from "./components/features/Logout/Logout";
-
+import Product from "./components/features/Product/Product";
+import { saveCartToLocalStorage } from "./redux/cartRedux";
+import Cart from "./components/pages/Cart/Cart";
 
 function App() {
 
   const dispatch = useDispatch();
+  const cart = useSelector(state => state.cart);
 
   const fetch = () => {
     dispatch(fetchAllProducts());
   }
 
   useEffect(() => fetch(), [fetch]);
-  //useEffect(() => dispatch(fetchAllProducts()), [dispatch]);
-  //dispatch(fetchAllProducts());
+
+  useEffect(() => {
+    dispatch(saveCartToLocalStorage(cart));
+  }, [cart]);
+
+  // useEffect(() => {
+  //   const cartFromLocalStorage = JSON.parse(localStorage.getItem('cart')) || [];
+  //   dispatch(saveCartToLocalStorage(cartFromLocalStorage));
+  // }, [dispatch]);
 
   return (
     <Container>
@@ -31,11 +41,8 @@ function App() {
       <Header />
       <Routes>
         <Route path="/" element={<Home />} />
-        {/* <Route path="/ad/:id" element={<Ad />} />
-        <Route path="/ad/add" element={<AdAdd />} />
-        <Route path="/ad/edit/:id" element={<Edit />} />
-        <Route path="/ad/remove/:id" element={<Remove />} />
-        <Route path="/search/:searchPhrase" element={<Search />} /> */}
+        <Route path="/product/:id" element={<Product />} />
+        <Route path="/cart" element={<Cart />} />
         <Route path="/login" element={<Login />} />
         <Route path="/logout" element={<Logout />} />
         <Route path="/register" element={<Register />} />

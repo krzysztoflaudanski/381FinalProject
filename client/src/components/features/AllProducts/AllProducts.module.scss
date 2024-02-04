@@ -1,0 +1,14 @@
+.img{
+    object-fit: cover;
+    max-width: 300px;
+    max-height: 180px;
+}
+
+.title{
+    white-space: nowrap;      /* Uniemożliwienie łamania tekstu na nową linię */
+    overflow: hidden;         /* Ukrycie tekstu, który wychodzi poza kontener */
+    text-overflow: ellipsis;
+    max-width: 300px
+}
+
+

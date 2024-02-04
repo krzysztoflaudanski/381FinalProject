@@ -2,7 +2,7 @@ import axios from 'axios';
 import { API_URL } from "../config";
 
 export const getAllProducts = ({ products }) => products;
-export const getProductById = ({ products }, id) => products.find(product => product._id === id)
+export const getProductById = ({ products }, id) => products.find(product => product.id === id)
 
 const createActionName = actionName => `app/products/${actionName}`;
 const UPDATE_PRODUCT = createActionName('UPDATE_PRODUCT');
