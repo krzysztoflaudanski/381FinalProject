@@ -38,16 +38,24 @@ export class OrdersController {
         return this.ordersService.create(orderData);
     }
 
-    @Put('/:id')
-    @UseGuards(JwtAuthGuard)
-    async update(
-        @Param('id', new ParseUUIDPipe()) id: string,
-        @Body() orderData: UpdateOrderDTO,
-    ) {
-        if (!(await this.ordersService.getById(id)))
-            throw new NotFoundException('Order not found');
+    // @Post('/')
+    // @UseGuards(JwtAuthGuard)
+    // async create(@Body() createOrderDto: CreateOrderDTO): Promise<any> {
 
-        await this.ordersService.updateById(id, orderData);
-        return { success: true };
-    }
+    //     const createdOrder = await this.ordersService.create(createOrderDto);
+    //     return { success: true, order: createdOrder };
+    // }
+
+    // @Put('/:id')
+    // @UseGuards(JwtAuthGuard)
+    // async update(
+    //     @Param('id', new ParseUUIDPipe()) id: string,
+    //     @Body() orderData: UpdateOrderDTO,
+    // ) {
+    //     if (!(await this.ordersService.getById(id)))
+    //         throw new NotFoundException('Order not found');
+
+    //     await this.ordersService.updateById(id, orderData);
+    //     return { success: true };
+    // }
 }

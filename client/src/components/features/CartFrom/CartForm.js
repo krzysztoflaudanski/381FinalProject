@@ -3,14 +3,21 @@ import { useSelector, useDispatch } from 'react-redux';
 import { Row, Col, Button, Form } from 'react-bootstrap';
 import { removeFromCart, updateCartItem } from '../../../redux/cartRedux';
 import { saveCartToLocalStorage } from '../../../redux/cartRedux';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../AuthContext/AuthContext';
+import Modal from 'react-bootstrap/Modal';
+import { NavLink } from 'react-router-dom';
+import Nav from 'react-bootstrap/Nav';
 
 const CartForm = () => {
   const cart = useSelector(state => state.cart);
   const dispatch = useDispatch();
-
-//   useEffect(() => {
-//     dispatch(saveCartToLocalStorage(cart));
-//   }, [cart]);
+  const navigate = useNavigate();
+  const { isAuthenticated } = useAuth();
+  const [login, setLogin] = useState('');
+  const [showModal, setShowModal] = useState(false);
+  const handleClose = () => setShowModal(false);
+  const handleShow = () => setShowModal(true);
 
   const handleRemoveFromCart = (productId) => {
     dispatch(removeFromCart(productId));
@@ -23,7 +30,6 @@ const CartForm = () => {
   const [itemComments, setItemComments] = useState({});
 
   const handleAddComment = (productId) => {
-    // Dodaj komentarz do produktu
     const updatedComments = { ...itemComments };
     updatedComments[productId] = ''; // Początkowo komentarz jest pusty
     setItemComments(updatedComments);
@@ -37,8 +43,22 @@ const CartForm = () => {
     dispatch(saveCartToLocalStorage(cart));
   };
 
+  const handleSummary = () => {
+    if (login) {
+      navigate('../order-summary')
+    } else {
+      setShowModal(true)
+    }
+  }
+console.log(itemComments)
+  useEffect(() => {
+    if (isAuthenticated) {
+      setLogin(true)
+    }
+  }, [isAuthenticated])
+
   return (
-    <div>
+    <section id="cart">
       <h2>Your Cart</h2>
       {cart.length === 0 ? (
         <p>Your cart is empty.</p>
@@ -46,48 +66,62 @@ const CartForm = () => {
         <>
           {cart.map((item) => (
             <div key={item.id}>
-            <Row >
-              <Col>{item.name}</Col>
-              <Col>
-                <Form.Control
-                  type="number"
-                  value={item.quantity}
-                  onChange={(e) => handleUpdateQuantity(item.id, parseInt(e.target.value, 10))}
-                />
-              </Col>
-              <Col>${item.price.toFixed(2)}</Col>
-              <Col>${(item.price * item.quantity).toFixed(2)}</Col>
-              <Col>
-                <Button onClick={() => handleRemoveFromCart(item.id)} variant="danger">
-                  Remove
-                </Button>
-              </Col>
-            </Row>
-            <Row className='my-2'>
-            <Col>
-            <Form.Control
-              type="text"
-              value={itemComments[item.id] || ''}
-              placeholder="Add comment"
-              onChange={(e) => handleCommentChange(item.id, e.target.value)}
-            />
-          </Col>
-          <Col>
-            <Button variant="primary" onClick={() => handleAddComment(item.id)}>Add Comment</Button>
-          </Col>
-            </Row>
+              <Row >
+                <Col>{item.name}</Col>
+                <Col>
+                  <Form.Control
+                    type="number"
+                    value={item.quantity}
+                    onChange={(e) => handleUpdateQuantity(item.id, parseInt(e.target.value, 10))}
+                  />
+                </Col>
+                <Col>${item.price.toFixed(2)}</Col>
+                <Col>${(item.price * item.quantity).toFixed(2)}</Col>
+                <Col>
+                  <Button onClick={() => handleRemoveFromCart(item.id)} variant="danger">
+                    Remove
+                  </Button>
+                </Col>
+              </Row>
+              <Row className='my-2'>
+                <Col>
+                  <Form.Control
+                    type="text"
+                    value={itemComments[item.id] || ''}
+                    placeholder="Add comment"
+                    onChange={(e) => handleCommentChange(item.id, e.target.value)}
+                  />
+                </Col>
+                <Col>
+                  <Button variant="primary" onClick={() => handleAddComment(item.id)}>Add Comment</Button>
+                </Col>
+              </Row>
             </div>
           ))}
           <Row>
             <Col>
-              <Button variant="success" href="/order-summary">
+              <Button variant="success" onClick={() => handleSummary()}>
                 Go to Order Summary
               </Button>
             </Col>
           </Row>
         </>
       )}
-    </div>
+      <Modal show={showModal} onHide={handleClose}>
+        <Modal.Header closeButton>
+          <Modal.Title>Alert</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>Please login first</Modal.Body>
+        <Modal.Footer>
+          <Nav.Link as={NavLink} to="../login"><Button variant="primary">
+            Login
+          </Button></Nav.Link>
+          <Nav.Link as={NavLink} to="/register"><Button variant="primary">
+            Register
+          </Button></Nav.Link>
+        </Modal.Footer>
+      </Modal>
+    </section>
   );
 };
 

@@ -37,7 +37,7 @@ const LoginForm = () => {
             // Odpowiedź z se// Dekodowanie wartości z URL-encoded
             const decodedCookieValue = decodeURIComponent(document.cookie);
 
-            console.log(decodedCookieValue); // Sprawdź zdekodowaną wartość
+            //console.log(decodedCookieValue); // Sprawdź zdekodowaną wartość
 
             // Popraw zakodowany Base64
             const base64String = decodedCookieValue.split('.')[1].replace('-', '+').replace('_', '/');

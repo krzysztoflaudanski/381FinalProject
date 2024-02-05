@@ -1,4 +1,7 @@
 
+
+export const getCart = ({ cart }) => cart;
+
 const createActionName = actionName => `app/cart/${actionName}`;
 
 const ADD_TO_CART = createActionName('ADD_TO_CART');

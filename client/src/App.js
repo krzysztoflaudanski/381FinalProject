@@ -14,6 +14,7 @@ import Logout from "./components/features/Logout/Logout";
 import Product from "./components/features/Product/Product";
 import { saveCartToLocalStorage } from "./redux/cartRedux";
 import Cart from "./components/pages/Cart/Cart";
+import OrderSummary from "./components/pages/OrderSummary/OrderSummary";
 
 function App() {
 
@@ -40,6 +41,7 @@ function App() {
       <AuthProvider>
       <Header />
       <Routes>
+        <Route path="/order-summary" element={<OrderSummary/>} />
         <Route path="/" element={<Home />} />
         <Route path="/product/:id" element={<Product />} />
         <Route path="/cart" element={<Cart />} />
