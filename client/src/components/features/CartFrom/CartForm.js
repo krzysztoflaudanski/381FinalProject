@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Row, Col, Button, Form } from 'react-bootstrap';
 import { removeFromCart, updateCartItem } from '../../../redux/cartRedux';
-import { saveCartToLocalStorage } from '../../../redux/cartRedux';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../AuthContext/AuthContext';
 import Modal from 'react-bootstrap/Modal';
@@ -23,25 +22,19 @@ const CartForm = () => {
     dispatch(removeFromCart(productId));
   };
 
-  const handleUpdateQuantity = (productId, newQuantity) => {
-    dispatch(updateCartItem(productId, newQuantity));
+  const handleUpdateQuantity = (productId, newQuantity, comment) => {
+    dispatch(updateCartItem(productId, newQuantity, comment));
   };
 
   const [itemComments, setItemComments] = useState({});
 
-  const handleAddComment = (productId) => {
-    const updatedComments = { ...itemComments };
-    updatedComments[productId] = ''; // Początkowo komentarz jest pusty
-    setItemComments(updatedComments);
+  const handleCommentChange = (productId, quantity, comment) => {
+
+    dispatch(updateCartItem(productId, quantity, comment));
+    setFormVisibility({ ...isFormVisible, [productId]: false });
   };
 
-  const handleCommentChange = (productId, comment) => {
-    // Zaktualizuj komentarz produktu
-    const updatedComments = { ...itemComments };
-    updatedComments[productId] = comment;
-    setItemComments(updatedComments);
-    dispatch(saveCartToLocalStorage(cart));
-  };
+  
 
   const handleSummary = () => {
     if (login) {
@@ -50,12 +43,33 @@ const CartForm = () => {
       setShowModal(true)
     }
   }
-console.log(itemComments)
+  console.log(itemComments)
   useEffect(() => {
     if (isAuthenticated) {
       setLogin(true)
     }
   }, [isAuthenticated])
+  console.log(cart)
+  // const initialFormVisibility = cart.reduce((acc, item) => {
+  //   acc[item.id] = true;
+  //   return acc;
+  // }, {});
+  
+  // const [isFormVisible, setFormVisibility] = useState(initialFormVisibility);
+
+  const [isFormVisible, setFormVisibility] = useState({});
+
+  useEffect(() => {
+    // Ustawienie początkowego stanu widoczności formularza na true dla produktów bez komentarzy
+    const initialFormVisibility = cart.reduce((acc, item) => {
+      // Jeśli cart.comment dla danego elementu jest pusty, ustaw true, w przeciwnym razie false
+      acc[item.id] = !item.comment;
+      return acc;
+    }, {});
+    setFormVisibility(initialFormVisibility);
+  }, [cart]);
+
+
 
   return (
     <section id="cart">
@@ -72,7 +86,7 @@ console.log(itemComments)
                   <Form.Control
                     type="number"
                     value={item.quantity}
-                    onChange={(e) => handleUpdateQuantity(item.id, parseInt(e.target.value, 10))}
+                    onChange={(e) => handleUpdateQuantity(item.id, parseInt(e.target.value), item.comment)}
                   />
                 </Col>
                 <Col>${item.price.toFixed(2)}</Col>
@@ -83,19 +97,61 @@ console.log(itemComments)
                   </Button>
                 </Col>
               </Row>
-              <Row className='my-2'>
-                <Col>
-                  <Form.Control
-                    type="text"
-                    value={itemComments[item.id] || ''}
-                    placeholder="Add comment"
-                    onChange={(e) => handleCommentChange(item.id, e.target.value)}
-                  />
-                </Col>
-                <Col>
-                  <Button variant="primary" onClick={() => handleAddComment(item.id)}>Add Comment</Button>
-                </Col>
-              </Row>
+              {/* {isFormVisible[item.id] ? (
+        <Row className='my-2'>
+          <Col>
+            <Form.Control
+              type="text"
+              value={itemComments[item.id] || ''}
+              placeholder="Add comment"
+              onChange={(e) => setItemComments({ ...itemComments, [item.id]: e.target.value })}
+            />
+          </Col>
+          <Col>
+            <Button variant="primary" onClick={handleAddComment}>
+              Add Comment
+            </Button>
+          </Col>
+        </Row>
+      ) : (
+        <Row className='my-2'>
+          <Col>{itemComments[item.id]}</Col>
+          <Col>
+            <Button variant="primary" onClick={handleEditComment}>
+              Edit Comment
+            </Button>
+          </Col>
+        </Row>
+      )} */}
+              {isFormVisible[item.id]  ? (
+                <Row className='my-2'>
+                  <Col>
+                    <Form.Control
+                      type="text"
+                      value={itemComments[item.id] || ''}
+                      placeholder="Add comment"
+                      onChange={(e) => setItemComments({ ...itemComments, [item.id]: e.target.value })}
+                    />
+                  </Col>
+                  <Col>
+
+                    <Button variant="primary" onClick={() => handleCommentChange(item.id, item.quantity, itemComments[item.id] || '')}>
+                      Add Comment
+                    </Button>
+
+                  </Col> </Row>
+              ) : (
+                <Row className='my-2'>
+                  <Col>
+                    {item.comment}
+                  </Col>
+                  <Col>
+                    <Button variant="primary" onClick={e => setFormVisibility({ ...isFormVisible, [item.id]: true })}>
+                      Edit Comment
+                    </Button>
+                  </Col>
+                </Row>
+              )}
             </div>
           ))}
           <Row>
@@ -126,3 +182,20 @@ console.log(itemComments)
 };
 
 export default CartForm;
+
+
+ {/* <Row className='my-2'>
+                <Col>
+                  <Form.Control
+                    type="text"
+                    value={itemComments[item.id] || ''}
+                    placeholder="Add comment"
+                    onChange={(e) => setItemComments({ ...itemComments, [item.id]: e.target.value })}
+                  />
+                </Col>
+                <Col>
+                  <Button variant="primary" onClick={() => handleCommentChange(item.id, item.quantity, itemComments[item.id] || '')}>
+                    Add Comment
+                  </Button>
+                </Col>
+              </Row> */}

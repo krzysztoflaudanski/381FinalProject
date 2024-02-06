@@ -28,9 +28,9 @@ export const removeFromCart = (productId) => ({
     payload: productId,
 });
 
-export const updateCartItem = (productId, quantity) => ({
+export const updateCartItem = (productId, quantity, comment) => ({
     type: UPDATE_CART_ITEM,
-    payload: { productId, quantity },
+    payload: { productId, quantity, comment },
 });
 
 const cartFromLocalStorage = JSON.parse(localStorage.getItem('cart')) || [];
@@ -60,7 +60,7 @@ const cartReducer = (statePart = cartFromLocalStorage, action) => {
         case UPDATE_CART_ITEM:
             return statePart.map((product) =>
                 product.id === action.payload.productId
-                    ? { ...product, quantity: action.payload.quantity }
+                    ? { ...product, quantity: action.payload.quantity, comment: action.payload.comment }
                     : product
             );
         default:

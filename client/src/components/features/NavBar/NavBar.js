@@ -26,26 +26,19 @@ const NavBar = () => {
             if (parsedData && parsedData.role === 'ADMIN') {
                 setAdmin(true)
             }
-
-            // ...kontynuuj operacje na zdekodowanym tokenie JWT według potrzeb...
         } else {
             setAdmin(false);
             setLogin(false);
-            console.error("Brak tokenu JWT w sessionStorage.");
         }
     }, [isAuthenticated])
-
-
 
     const cart = useSelector(getCart);
 
     useEffect(() => {
-        // Pobierz ilość produktów z koszyka po załadowaniu komponentu
         updateCartCount();
-    }, [cart]); // Monitoruj zmiany w koszyku
+    }, [cart]);
 
     const updateCartCount = () => {
-        // Sprawdź, czy 'cart' istnieje przed próbą uzyskania dostępu do jego długości
         const cartCount = cart ? cart.length : 0;
         setCartCount(cartCount);
     };
