@@ -140,9 +140,9 @@ const RegisterForm = () => {
 
             <Form.Group className="mb-3" controlId="address">
                 <Form.Label>Address</Form.Label>
-                <Form.Control {...register("address", { required: true, minLength: 10, maxLength: 50, pattern: /^[a-zA-Z0-9-\s]+$/ })}
+                <Form.Control {...register("address", { required: true, minLength: 10, maxLength: 50, pattern: /^[a-zA-Z0-9-\s/-]+$/ })}
                     as="textarea" rows={3} placeholder="address" value={address} onChange={e => setAddress(e.target.value)} />
-                {errors.address && <small className='d-block form-text text-danger mt-2'>Only a-z, A-Z, 0-9, min:10, max:50</small>}
+                {errors.address && <small className='d-block form-text text-danger mt-2'>Only a-z, A-Z, 0-9, - / min:10, max:50</small>}
             </Form.Group>
 
             <Button variant="primary" type="submit">Submit</Button>
