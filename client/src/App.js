@@ -29,28 +29,23 @@ function App() {
 
   useEffect(() => {
     dispatch(saveCartToLocalStorage(cart));
-  }, [cart]);
-
-  // useEffect(() => {
-  //   const cartFromLocalStorage = JSON.parse(localStorage.getItem('cart')) || [];
-  //   dispatch(saveCartToLocalStorage(cartFromLocalStorage));
-  // }, [dispatch]);
+  }, [cart, dispatch]);
 
   return (
     <Container>
       <AuthProvider>
-      <Header />
-      <Routes>
-        <Route path="/order-summary" element={<OrderSummary/>} />
-        <Route path="/" element={<Home />} />
-        <Route path="/product/:id" element={<Product />} />
-        <Route path="/cart" element={<Cart />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/logout" element={<Logout />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="*" element={<NotFound />} />
-      </Routes>
-      <Footer />
+        <Header />
+        <Routes>
+          <Route path="/order-summary" element={<OrderSummary />} />
+          <Route path="/" element={<Home />} />
+          <Route path="/product/:id" element={<Product />} />
+          <Route path="/cart" element={<Cart />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/logout" element={<Logout />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+        <Footer />
       </AuthProvider>
     </Container>
   );

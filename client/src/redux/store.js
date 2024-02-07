@@ -4,10 +4,12 @@ import initialState from './initialState';
 //import usersReducer from './usersRedux';
 import productsReducer from './productsRedux'
 import cartReducer from './cartRedux';
+import ordersReducer from './orderRedux';
 
 const subreducers = {
   products: productsReducer,
-  cart: cartReducer
+  cart: cartReducer,
+  orders: ordersReducer
 }
 
 const reducer = combineReducers(subreducers);

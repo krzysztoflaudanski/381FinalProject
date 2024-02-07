@@ -22,8 +22,8 @@ export class ProductsController {
     }
 
     @Post('/')
-    @UseGuards(JwtAuthGuard)
     @UseGuards(AdminAuthGuard)
+    @UseGuards(JwtAuthGuard)
     create(@Body() productData: CreateProductDTO) {
         return this.productsService.create(productData);
     }

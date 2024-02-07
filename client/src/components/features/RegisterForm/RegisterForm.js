@@ -16,12 +16,9 @@ const RegisterForm = () => {
     const [passwordRepeat, setPasswordRepeat] = useState('');
     const [status, setStatus] = useState(null) //loading, success, serverError, clientError, loginError
 
-
     const onSubmit = async (data) => {
-        console.log(data)
         try {
             setStatus("loading");
-
             const response = await fetch(`${API_URL}/auth/register`, {
                 method: 'POST',
                 headers: {
@@ -46,7 +43,7 @@ const RegisterForm = () => {
     };
 
     return (
-        <Form onSubmit={handleSubmit(onSubmit)} className="mx-auto" style={{ width: '300px' }}>
+        <Form onSubmit={handleSubmit(onSubmit)} className="mx-auto" style={{ maxWidth: '300px'}}>
 
             <h1>Sign Up</h1>
 
@@ -97,7 +94,7 @@ const RegisterForm = () => {
                     }
                 })}
                     type="password" placeholder="Enter password" value={password} onChange={e => setPassword(e.target.value)} />
-                {errors.password && <small className='d-block form-text text-danger mt-2'>only a-z, A-Z, 1-9, .,;:"'/?!@#$%^&*()--+= are available, min:10,</small>}
+                {errors.password && <small className='d-block form-text text-danger mt-2'>Password must contain at least one lowercase letter, one uppercase letter, and one digit. only a-z, A-Z, 1-9, .,;:"'/?!@#$%^&*()--+= are available, min:10,</small>}
             </Form.Group>
 
             <Form.Group className="mb-3" controlId="passwordRepeat">
@@ -153,10 +150,4 @@ const RegisterForm = () => {
     )
 }
 
-{/* <Form.Group className="mb-3" controlId="phone">
-                <Form.Label>Phone</Form.Label>
-                <Form.Control {...register("phone", { required: true, minLength: 9, maxLength: 25, pattern: /^[0-9]+$/ })}
-                    type="tel" placeholder="Phone number" value={phone} onChange={e => setPhone(e.target.value)} />
-                {errors.phone && <small className='d-block form-text text-danger mt-2'>only 1-9 are available, min:9, max:25</small>}
-            </Form.Group> */}
 export default RegisterForm

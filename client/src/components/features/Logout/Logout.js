@@ -38,7 +38,7 @@ const Logout = () => {
         } else {
             console.error("Brak zakodowanego tokenu JWT w sessionStorage.");
         }
-    }, [navigate]);
+    }, [navigate, setIsAuthenticated]);
 
     return null;
 }

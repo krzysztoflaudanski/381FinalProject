@@ -1,5 +1,3 @@
-
-
 export const getCart = ({ cart }) => cart;
 
 const createActionName = actionName => `app/cart/${actionName}`;
@@ -8,6 +6,7 @@ const ADD_TO_CART = createActionName('ADD_TO_CART');
 const SAVE_CART_TO_LOCAL_STORAGE = createActionName('SAVE_CART_TO_LOCAL_STORAGE');
 const REMOVE_FROM_CART = createActionName('REMOVE_FROM_CART');
 const UPDATE_CART_ITEM = createActionName('UPDATE_CART_ITEM');
+const CLEAR_CART = createActionName('CLEAR_CART');
 
 export const addToCart = (product) => {
     return {
@@ -33,27 +32,27 @@ export const updateCartItem = (productId, quantity, comment) => ({
     payload: { productId, quantity, comment },
 });
 
+export const clearCart = () => ({ type: CLEAR_CART });
+
 const cartFromLocalStorage = JSON.parse(localStorage.getItem('cart')) || [];
 
 const cartReducer = (statePart = cartFromLocalStorage, action) => {
     switch (action.type) {
         case ADD_TO_CART:
-            // Sprawdzamy, czy produkt o danym ID już istnieje w koszyku
             const existingProduct = statePart.find(item => item.id === action.payload.id);
-
             if (existingProduct) {
-                // Jeśli istnieje, zwiększamy ilość
                 return statePart.map(item =>
                     item.id === action.payload.id
                         ? { ...item, quantity: item.quantity + 1 }
                         : item
                 );
             } else {
-                // Jeśli nie istnieje, dodajemy nowy produkt
                 return [...statePart, { ...action.payload, quantity: 1 }];
             }
         case SAVE_CART_TO_LOCAL_STORAGE:
-            localStorage.setItem('cart', JSON.stringify(action.payload));
+            if (action.payload) {
+                localStorage.setItem('cart', JSON.stringify(action.payload));
+              }
             return statePart;
         case REMOVE_FROM_CART:
             return statePart.filter((product) => product.id !== action.payload);
@@ -63,6 +62,8 @@ const cartReducer = (statePart = cartFromLocalStorage, action) => {
                     ? { ...product, quantity: action.payload.quantity, comment: action.payload.comment }
                     : product
             );
+            case CLEAR_CART:
+            return [];
         default:
             return statePart;
     }

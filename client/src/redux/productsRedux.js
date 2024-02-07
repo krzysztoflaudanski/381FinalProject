@@ -1,8 +1,13 @@
 import axios from 'axios';
 import { API_URL } from "../config";
+import { createSelector } from 'reselect';
 
 export const getAllProducts = ({ products }) => products;
 export const getProductById = ({ products }, id) => products.find(product => product.id === id)
+export const memoizedGetProductById = createSelector(
+    [getProductById],
+    (product) => product || {}
+  );
 
 const createActionName = actionName => `app/products/${actionName}`;
 const UPDATE_PRODUCT = createActionName('UPDATE_PRODUCT');

@@ -6,7 +6,7 @@ import { useEffect, useState } from 'react';
 import { useAuth } from '../AuthContext/AuthContext';
 import { useSelector } from 'react-redux';
 import { getCart } from '../../../redux/cartRedux';
-
+import { useCallback } from 'react';
 
 const NavBar = () => {
     const [login, setLogin] = useState(false);
@@ -30,25 +30,24 @@ const NavBar = () => {
             setAdmin(false);
             setLogin(false);
         }
-    }, [isAuthenticated])
+    }, [isAuthenticated, userData])
 
     const cart = useSelector(getCart);
 
-    useEffect(() => {
-        updateCartCount();
+    const updateCartCount = useCallback(() => {
+        const count = cart ? cart.reduce((total, product) => total + (product.quantity || 0), 0) : 0;
+        setCartCount(count);
     }, [cart]);
 
-    const updateCartCount = () => {
-        const cartCount = cart ? cart.length : 0;
-        setCartCount(cartCount);
-    };
-
+    useEffect(() => {
+        updateCartCount();
+    }, [cart, updateCartCount]);
 
     return (
         <Navbar bg="primary" variant="dark" expand="lg" className="mt-4 mb-4 rounded">
             <Container>
                 <Nav.Link as={NavLink} to="/">
-                    <Navbar.Brand>Announcement.app</Navbar.Brand>
+                    <Navbar.Brand>Market.app</Navbar.Brand>
                 </Nav.Link>
                 <Navbar.Toggle aria-controls="responsive-navbar-nav" />
                 <Navbar.Collapse className="justify-content-end" id="responsive-navbar-nav">

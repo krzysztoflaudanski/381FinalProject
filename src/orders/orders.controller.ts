@@ -2,7 +2,7 @@ import { Controller, Get, Param, Delete, Post, Put, Body, UseGuards } from '@nes
 import { OrdersService } from './orders.service';
 import { ParseUUIDPipe, NotFoundException } from '@nestjs/common';
 import { CreateOrderDTO } from './dtos/create-order.dto';
-import { UpdateOrderDTO } from './dtos/update-order.dto';
+//import { UpdateOrderDTO } from './dtos/update-order.dto';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { AdminAuthGuard } from 'src/auth/admin-auth.guard';
 
@@ -11,11 +11,14 @@ export class OrdersController {
     constructor(private ordersService: OrdersService) { }
 
     @Get('/')
+    @UseGuards(AdminAuthGuard)
+    @UseGuards(JwtAuthGuard)
     getAll(): any {
         return this.ordersService.getAll();
     }
 
     @Get('/:id')
+    @UseGuards(AdminAuthGuard)
     @UseGuards(JwtAuthGuard)
     async getById(@Param('id', new ParseUUIDPipe()) id: string) {
         const order = await this.ordersService.getById(id);
@@ -24,6 +27,7 @@ export class OrdersController {
     }
 
     @Delete('/:id')
+    @UseGuards(AdminAuthGuard)
     @UseGuards(JwtAuthGuard)
     async deleteById(@Param('id', new ParseUUIDPipe()) id: string) {
         if (!(await this.ordersService.getById(id)))
@@ -35,27 +39,8 @@ export class OrdersController {
     @Post('/')
     @UseGuards(JwtAuthGuard)
     create(@Body() orderData: CreateOrderDTO) {
+        console.log(orderData)
         return this.ordersService.create(orderData);
+       
     }
-
-    // @Post('/')
-    // @UseGuards(JwtAuthGuard)
-    // async create(@Body() createOrderDto: CreateOrderDTO): Promise<any> {
-
-    //     const createdOrder = await this.ordersService.create(createOrderDto);
-    //     return { success: true, order: createdOrder };
-    // }
-
-    // @Put('/:id')
-    // @UseGuards(JwtAuthGuard)
-    // async update(
-    //     @Param('id', new ParseUUIDPipe()) id: string,
-    //     @Body() orderData: UpdateOrderDTO,
-    // ) {
-    //     if (!(await this.ordersService.getById(id)))
-    //         throw new NotFoundException('Order not found');
-
-    //     await this.ordersService.updateById(id, orderData);
-    //     return { success: true };
-    // }
 }

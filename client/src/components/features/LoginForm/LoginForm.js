@@ -22,7 +22,7 @@ const LoginForm = () => {
                     'Content-Type': 'application/json',
                     'Access-Control-Allow-Origin': '*',
                 },
-                credentials: 'include', // Wysyłaj ciasteczka w zapytaniu
+                credentials: 'include',
                 body: JSON.stringify({ login, password })
             });
 
@@ -31,19 +31,9 @@ const LoginForm = () => {
                 setStatus('serverError')
                 throw new Error('log error');
             }
-
-            const data = await response.json();
-
-            // Odpowiedź z se// Dekodowanie wartości z URL-encoded
             const decodedCookieValue = decodeURIComponent(document.cookie);
-
-            //console.log(decodedCookieValue); // Sprawdź zdekodowaną wartość
-
-            // Popraw zakodowany Base64
             const base64String = decodedCookieValue.split('.')[1].replace('-', '+').replace('_', '/');
             const paddedBase64String = base64String + '==='.slice((base64String.length + 3) % 4);
-
-            // Zdekoduj wartość Base64
             const parsedJwt = JSON.parse(atob(paddedBase64String));
             const jwtString = JSON.stringify(parsedJwt);
             sessionStorage.setItem('authToken', jwtString);
@@ -51,7 +41,6 @@ const LoginForm = () => {
             setStatus('success');
             navigate('/');
 
-            // Tutaj możesz dodać kod obsługi odpowiedzi z serwera
         } catch (error) {
             console.error('Wystąpił błąd:', error.message);
             setStatus('clientError');
@@ -59,7 +48,7 @@ const LoginForm = () => {
     };
 
     return (
-        <Form onSubmit={handleLogin} className="mx-auto" style={{ width: '300px' }}>
+        <Form onSubmit={handleLogin} className="mx-auto" style={{ maxWidth: '300px' }}>
 
             <h1>Sign in</h1>
 
@@ -102,43 +91,5 @@ const LoginForm = () => {
         </Form>
     )
 }
-
-// const handleSubmit = e => {
-//     e.preventDefault();
-
-//     const options = {
-//         method: 'POST',
-//         headers: {
-//             'Content-Type': 'application/json'
-//         },
-//         body: JSON.stringify({ login, password })
-//     };
-
-//     setStatus('loading');
-//     fetch(`${API_URL}/auth/login`, options)
-//         .then(res => {
-//             if (res.status === 200) {
-
-//                 return res.json();
-//             }
-//             else if (res.status === 400) {
-//                 setStatus('clientError')
-//             } else {
-//                 setStatus('serverError')
-//             }
-//         })
-//         .then(data => {
-
-//             const { id, avatar, phone } = data.user;
-//             setStatus('success');
-//             dispatch(logIn({ login, id, avatar, phone }));
-//             navigate('/')
-//         })
-//         .catch(err => {
-//             console.log(err)
-//             setStatus('serverError')
-//         })
-// }
-
 
 export default LoginForm

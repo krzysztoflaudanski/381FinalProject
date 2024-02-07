@@ -23,38 +23,30 @@ export class OrdersService {
         });
     }
 
-  // orders.service.ts
-
-    public async create(orderData: { clientId: string; products: { productId: string; quantity: number; comment?: string }[]  }): Promise<Order> {
+    public async create(orderData: { clientId: string; products: { productId: string; quantity: number; comment?: string }[] }): Promise<Order> {
         const { clientId, products } = orderData;
 
         try {
-            // Tworzymy zamówienie
             const createdOrder = await this.prismaService.order.create({
                 data: {
                     client: {
                         connect: { id: clientId },
                     },
+                    products: {
+                        create: products.map(({ productId, quantity, comment }) => ({
+                            product: {
+                                connect: { id: productId },
+                            },
+                            quantity,
+                            comment,
+                        })),
+                    },
+                },
+                include: {
+                    products: true,
                 },
             });
 
-            // Dodajemy produkty do zamówienia przy użyciu modelu pośredniczącego ProductToOrder
-            for (const { productId, quantity, comment } of products) {
-                await this.prismaService.productToOrder.create({
-                  data: {
-                    product: {
-                      connect: { id: productId },
-                    },
-                    order: {
-                      connect: { id: createdOrder.id },
-                    },
-                    quantity,
-                    comment,
-                  },
-                });
-              }
-
-            // Zwracamy utworzone zamówienie
             return createdOrder;
         } catch (error) {
             if (error.code === 'P2025') {
